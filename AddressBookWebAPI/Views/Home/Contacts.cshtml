@@ -1,0 +1,228 @@
+﻿
+@{
+    ViewBag.Title = "Contacts :- Address Book";
+   
+}
+
+
+@section scripts {
+
+    <link href="~/Content/CustomStyle.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/angular.js"></script>
+    <script src="~/Scripts/messages.js"></script>
+    <script src="~/Scripts/addressBook_angular.js"></script>
+    <script type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0"></script>
+    <script src="~/Scripts/bing_maps.js"></script>
+    <script type="text/javascript">
+        
+         // Initializing bing map control
+        getMap();
+        
+    </script>
+    }
+
+<div ng-app="angModuleAddressBook" id="body">
+    <div ng-controller="angCtrlAddressBook">
+        <h2>Address Book CRUD Operations with AngularJS and asp.net MVC5 WebAPI</h2>
+
+
+
+        <div style="display:table;width:100%">
+            
+            <div style="display:table-row;">
+                <div style="display:table-cell;vertical-align:top">
+                    <div class="error-messages" style="display:none;"><h2>Update Contacts</h2></div>
+                    <form name="contactForm">
+
+                        <div ng-show="Contact.ContactID != '' ">
+                            <div>
+                                <h2>Update Contacts</h2>
+                            </div>
+                            <div hidden="hidden">
+                                <label for="id">Id</label>
+                                <input type="text" data-ng-model="Contact.ContactID" />
+                            </div>
+                            <div>
+                                <label for="name">Name * </label>
+                                <input name="upName" type="text" data-ng-model="Contact.Name" required />
+                                <span ng-show="contactForm.upName.$touched && contactForm.upName.$invalid">The name is required.</span>
+                            </div>
+
+                            <div>
+                                <label for="Email">Email * </label>
+                                <input name="upEmail" type="email" data-ng-model="Contact.Email" required />
+                                
+                                    <span class="error" ng-show="contactForm.upEmail.$touched &&  contactForm.upEmail.$error.required"> Required! </span>
+                                    <span class="error" ng-show="contactForm.upEmail.$error.email">Not valid email!</span>
+                                
+                            </div>
+
+                            <div>
+                                <label for="PhoneNumber">Phone Number</label>
+                                <input type="text" data-ng-model="Contact.PhoneNumber" />
+                            </div>
+
+                            <div>
+                                <label for="JobPosition">Job Position</label>
+                                <input type="text" data-ng-model="Contact.JobPosition" />
+                            </div>
+
+                            <div>
+                                <label for="Institution">Institution</label>
+                                <input type="text" data-ng-model="Contact.Institution" />
+                            </div>
+
+                            <div>
+                                <label for="AddressLine">Address Line</label>
+                                <input type="text" data-ng-model="Contact.AddressLine" size="50" />
+                                <button 
+                                        ng-if="Contact.AddressLine !=''"
+                                        ng-click="findAddressOnMap(Contact)">
+
+                                    Find on Map
+                                </button>
+                            </div>
+
+
+                            <br />
+                            <div>
+                                <button data-ng-click="update()">Update</button>
+                                <button data-ng-click="cancel()">Cancel</button>
+
+                            </div>
+                        </div>
+
+                        <div ng-hide="Contact.ContactID != '' ">
+                            <div>
+                                <h2>Add New Product</h2>
+                            </div>
+                            <div>
+                                <label for="name">Name * </label>
+                                <input name="addName" type="text" data-ng-model="Contact.Name" required />
+                                <span ng-show="contactForm.addName.$touched && contactForm.addName.$invalid">The name is required.</span>
+                            </div>
+
+                            <div>
+                                <label for="Email">Email * </label>
+                                <input name="addEmail" type="email" data-ng-model="Contact.Email" required />
+
+                                <span class="error" ng-show="contactForm.addEmail.$touched &&  contactForm.addEmail.$error.required"> Required! </span>
+                                <span class="error" ng-show="contactForm.addEmail.$error.email">Not valid email!</span>
+
+                            </div>
+
+                            <div>
+                                <label for="PhoneNumber">Phone Number</label>
+                                <input type="text" data-ng-model="Contact.PhoneNumber" />
+                            </div>
+
+                            <div>
+                                <label for="JobPosition">Job Position</label>
+                                <input type="text" data-ng-model="Contact.JobPosition" />
+                            </div>
+
+                            <div>
+                                <label for="Institution">Institution</label>
+                                <input type="text" data-ng-model="Contact.Institution" />
+                            </div>
+
+                            <div>
+                                <label for="AddressLine">Address Line</label>
+                                <input type="text" data-ng-model="Contact.AddressLine"  size="50"/>
+
+                                <button ng-if="Contact.AddressLine !=''"
+                                        ng-click="findAddressOnMap(Contact)">
+
+                                    Find on Map
+                                </button>
+                            </div>
+
+                            <br />
+                            <div>
+                                <button data-ng-click="save()">Save</button>
+                                <button data-ng-click="clear()">Clear</button>
+                            </div>
+                        </div>
+
+                    </form>
+</div>
+                <div style="display:table-cell">
+                    <!-- Map container Div for bings maps-->
+                    <div id='myMap' style="position:relative; width:500px; height:250px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <br/>
+
+        <div >
+            <h3>   List of Contacts</h3>
+
+            <table ng-cloak >
+                <thead>
+                    <tr>
+                        <th style="display: none;">Contacts ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone Number</th>
+                        <th>Job Position</th>
+                        <th>Institution</th>
+                        <th>Address Line</th>
+                        <th>Actions</th>
+                        @*<th>Post Code</th>
+                        <th>City</th>
+                        <th>State</th>
+                        <th>Country</th>*@
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="items in contactsData">
+                        <td  hidden="hidden">{{items.ContactID}}</td>
+                        <td>{{items.Name}}</td>
+                        <td>{{items.Email}}</td>
+                        <td>{{items.PhoneNumber}}</td>
+                        <td>{{items.JobPosition}}</td>
+                        <td>{{items.Institution}}</td>
+                        <td>{{items.AddressLine}}</td>
+                        @*<td>{{items.PostCode}}</td>
+                        <td>{{items.City}}</td>
+                        <td>{{items.State}}</td>
+                        <td>{{items.Country}}</td>*@
+
+
+                        <td>
+                            <button ng-model="$scope.Contact"
+                                    ng-click="edit(contactsData[$index])">
+                                Edit
+                            </button>
+
+                            <button ng-click="delete($index)">Delete</button>
+                            
+                            <button ng-model="$scope.Contact"
+                                    ng-if="contactsData[$index].AddressLine !=''"
+                                    ng-click="findAddressOnMap(contactsData[$index])">
+
+                                    Find on Map
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="6"></td>
+                    </tr>
+
+                </tfoot>
+            </table>
+        </div>
+       
+       
+        
+        
+
+       
+
+    </div>
+</div>
+

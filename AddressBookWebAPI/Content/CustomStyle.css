@@ -1,0 +1,74 @@
+﻿[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+    display: none !important;
+}
+
+body {
+            margin: 20px;
+            font-family: "Arial", "Helventica", sans-serif;
+            font-size: 0.8em;
+        }
+
+        label {
+            width: 120px;
+            display: inline-block;
+        }
+
+        button {
+            display: inline-block;
+            outline: none;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            padding: .4em 1.1em .4em;
+            color: #fef4e9;
+            border: solid 1px #006fb9;
+            background: #1276bb;
+            margin:4px;
+        }
+
+            button:hover {
+                text-decoration: none;
+                background: #282828;
+                border: solid 1px #000;
+            }
+
+        table , th,td {
+            border: 1px solid black;
+        }
+
+        thead, tfoot {
+            font-weight: 600;
+        }
+
+        th{
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+
+        tr:nth-child(even) {background-color: #f2f2f2}
+        tr:hover {background-color: #e0fbe1}
+        
+         td {
+            padding: .1em .5em;
+            text-align: left;
+            }
+
+            td li, td ul {
+                margin: 0;
+                padding: 0;
+            }
+
+            td li {
+                display: inline;
+            }
+
+        .error-messages{
+            color: red;
+            font-size: 1.2em;
+        }
+
+
+           
+
+            
